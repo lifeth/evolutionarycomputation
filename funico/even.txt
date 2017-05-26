@@ -1,0 +1,10 @@
+3
+7
+even(0) = true
+even(1) = false
+even(2) = true
+even(3) = false
+even(4) = true
+even(5) = false
+even(6) = true
+even(7) = false

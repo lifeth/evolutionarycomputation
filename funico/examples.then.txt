@@ -1,0 +1,6 @@
+2
+5
+then(true,true) = true
+then(true,false) = false
+then(false,true) = true
+then(false,false) = true

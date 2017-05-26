@@ -1,0 +1,6 @@
+2
+5
+iff(true,true) = true
+iff(true,false) = false
+iff(false,true) = false
+iff(false,false) = true

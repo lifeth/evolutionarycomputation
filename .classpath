@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="agents/src"/>
+	<classpathentry kind="src" path="data/src"/>
+	<classpathentry kind="src" path="demo/src"/>
+	<classpathentry kind="src" path="evolution/src"/>
+	<classpathentry kind="src" path="gui/src"/>
+	<classpathentry kind="src" path="learn/src"/>
+	<classpathentry kind="src" path="math/src"/>
+	<classpathentry kind="src" path="optimization/src"/>
+	<classpathentry kind="src" path="random/src"/>
+	<classpathentry kind="src" path="services/src"/>
+	<classpathentry kind="src" path="types/src"/>
+	<classpathentry kind="src" path="course"/>
+	<classpathentry kind="src" path="funico"/>
+	<classpathentry kind="lib" path="learn/lib/mysql-connector-java-5.1.37-bin.jar"/>
+	<classpathentry kind="lib" path="libs/agents.jar"/>
+	<classpathentry kind="lib" path="libs/data.jar"/>
+	<classpathentry kind="lib" path="libs/demo.jar"/>
+	<classpathentry kind="lib" path="libs/evolution.jar"/>
+	<classpathentry kind="lib" path="libs/gui.jar"/>
+	<classpathentry kind="lib" path="libs/math.jar"/>
+	<classpathentry kind="lib" path="libs/mysql-connector-java-5.1.37-bin.jar"/>
+	<classpathentry kind="lib" path="libs/optimization.jar"/>
+	<classpathentry kind="lib" path="libs/random.jar"/>
+	<classpathentry kind="lib" path="libs/services.jar"/>
+	<classpathentry kind="lib" path="libs/types.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
