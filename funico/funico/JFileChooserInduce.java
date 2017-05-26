@@ -103,9 +103,6 @@ public class JFileChooserInduce extends JFrame implements ActionListener {
 										population.get(j).info(InduceProgram.gName) });
 							}
 						}
-
-						//this.dtm.fireTableRowsInserted(0, list.size() * InduceProgram.inducedPrograms.size());
-
 					} while (!isCovered);
 
 				}
