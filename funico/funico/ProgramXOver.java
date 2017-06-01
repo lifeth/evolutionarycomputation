@@ -25,27 +25,25 @@ public class ProgramXOver extends Variation_2_2<Program> {
 		Object[] term1 = getRandomSubtree(child1_1, child1_2);
 		Object[] term2 = getRandomSubtree(child2_1, child2_2);
 
-		Term term_1_1 = (Term) term1[1];
 		Term term_2_1 = (Term) term2[1];
 
 		logging("Before: " + child1_2);
 		Term node = (Term) term1[2];
 		logging("Changed by: " + term_2_1);
-		Term newNode = new Term(term_2_1.getValue(), term_2_1.getType(), node.getParent());
-		newNode.setListChildren(term_2_1.getListChildren());
-		int index = node.getParent().getListChildren().indexOf(node);
-		node.getParent().setChild(index, newNode);
+		node.setValue(term_2_1.getValue());
+		node.setType(term_2_1.getType());
+		node.setListChildren(term_2_1.getListChildren());
 		child1_2.setEqPos((int) term1[0]);
 		logging("After: " + child1_2);
 
+		Term term_1_1 = (Term) term1[1];
 
 		logging("Before: " + child2_2);
 		node = (Term) term2[2];
 		logging("Changed by: " + term_1_1);
-		newNode = new Term(term_1_1.getValue(), term_1_1.getType(), node.getParent());
-		newNode.setListChildren(term_1_1.getListChildren());
-		index = node.getParent().getListChildren().indexOf(node);
-		node.getParent().setChild(index, newNode);
+		node.setValue(term_1_1.getValue());
+		node.setType(term_1_1.getType());
+		node.setListChildren(term_1_1.getListChildren());
 		child2_2.setEqPos((int) term2[0]);
 		logging("After: " + child2_2);
 
@@ -73,7 +71,7 @@ public class ProgramXOver extends Variation_2_2<Program> {
 		new InduceProgram(examples, 3, 10);
 
 		new ProgramXOver().apply(
-				new Program("geq(A,s(A)) = false; geq(s(s(A)),s(s(s(s(s(B)))))) = false; geq(A,B) = true"), new Program(
-						"geq(s(s(A)),s(s(s(s(s(B)))))) = geq(A,s(A)); geq(s(A),s(B)) = geq(A,s(B)); geq(s(A),B) = true"));
+				new Program("geq(A,s(A)) = false; geq(s(s(A)),s(B)) = false; geq(A,B) = true"), new Program(
+						"geq(s(s(A)),A) = geq(A,s(A)); geq(s(A),s(B)) = geq(A,s(B)); geq(s(A),B) = true"));
 	}
 }

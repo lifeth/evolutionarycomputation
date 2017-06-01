@@ -134,6 +134,7 @@ public class Term implements FunicoConstants {
         if (this.getListChildren() == null) {
             this.setListChildren(new LinkedList<Term>());
         }
+
         this.getListChildren().add(term);
         term.setParent(this);
     }
@@ -185,15 +186,15 @@ public class Term implements FunicoConstants {
      * @return
      */
     @Override
-    public Term clone() {
+    public Object clone() {
         return clone(this);
     }
 
-    public static Term clone(Term term) {
+    public static Object clone(Term term) {
         return clone(term, new Term(term));
     }
 
-    private static Term clone(Term term, Term parent) {
+    private static Object clone(Term term, Term parent) {
         if (term.getListChildren() != null) {
             for (Iterator<Term> it = term.getListChildren().iterator(); it.hasNext();) {
                 t_aux = it.next();

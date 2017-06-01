@@ -16,16 +16,15 @@ public class GAIterativePopulationSearch<T,R> extends IterativePopulationSearch<
 	
 	@Override
 	public Population<T> apply(Population<T> pop, Space<T> space) {
-    	//Tracer.trace(this, pop, step);
-    	ForLoopCondition< Population<T> > it = (ForLoopCondition< Population<T> >) terminationCondition;
+
+		ForLoopCondition< Population<T> > it = (ForLoopCondition< Population<T> >) terminationCondition;
 		Solution<T>[] bestSolutions = (Solution<T>[])tagged_array(it.getEnd());
 
         while( this.terminationCondition.evaluate(pop) ){
             pop = step.apply(pop, space);
-            
+        
 			//Select the best of the population in the current it
             bestSolutions[it.getIter()] = pick(pop);
-        	//Tracer.trace(this, pop, step);
         }
         
         //Best solutions by iteration

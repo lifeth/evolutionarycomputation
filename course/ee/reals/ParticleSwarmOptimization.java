@@ -1,7 +1,5 @@
 package ee.reals;
 
-import unalcol.descriptors.Descriptors;
-import unalcol.io.Write;
 import unalcol.optimization.OptimizationFunction;
 import unalcol.optimization.OptimizationGoal;
 import unalcol.optimization.method.AdaptOperatorOptimizationFactory;
@@ -17,11 +15,8 @@ import unalcol.random.real.SimplestSymmetricPowerLawGenerator;
 import unalcol.reflect.tag.TaggedObject;
 import unalcol.search.Goal;
 import unalcol.search.local.LocalSearch;
-import unalcol.search.solution.SolutionDescriptors;
-import unalcol.search.solution.SolutionWrite;
 import unalcol.search.space.Space;
 import unalcol.types.real.array.DoubleArray;
-import unalcol.types.real.array.DoubleArrayPlainWrite;
 
 public class ParticleSwarmOptimization {
 	
@@ -58,19 +53,7 @@ public class ParticleSwarmOptimization {
         	OptimizationFactory<double[]> factory = new OptimizationFactory<double[]>();
         	search = factory.hill_climbing( variation, neutral, MAXITERS );
         }
-        // Tracking the goal evaluations
-        SolutionDescriptors<double[]> desc = new SolutionDescriptors<double[]>();
-        Descriptors.set(TaggedObject.class, desc);
-        DoubleArrayPlainWrite write = new DoubleArrayPlainWrite(false);
-        Write.set(double[].class, write);
-        SolutionWrite<double[]> w_desc = new SolutionWrite<double[]>(true);
-        Write.set(TaggedObject.class, w_desc);
-        
-        //ConsoleTracer tracer = new ConsoleTracer();       
-        //Tracer.addTracer(goal, tracer);  // Uncomment if you want to trace the function evaluations
-        //Tracer.addTracer(search, tracer); // Uncomment if you want to trace the hill-climbing algorithm
-        
-        // Apply the search method
+              // Apply the search method
         TaggedObject<double[]> solution = search.solve(space, goal);
         
         System.out.println(solution.info(Goal.class.getName()));	

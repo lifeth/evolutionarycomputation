@@ -75,6 +75,25 @@ public class Evaluator implements FunicoConstants {
         Term g = new Goal(goal).getListGoals().getFirst();
         return evalue(p, g, maxStep, Evaluator.WITHOUT_LIMIT_REDEX).toString();
     }
+    
+    /**
+    *
+    * @param source
+    * @param goal
+    * @param maxStep
+    * @param maxRedex
+    * @return
+    * @throws LexicalException
+    * @throws SyntacticalException
+    * @throws funico.interpreter.ProgramException
+    * @throws funico.interpreter.GoalException
+    */
+   public static String evalue(String source, String goal, int maxStep, int maxRedex)
+           throws LexicalException, SyntacticalException, ProgramException, GoalException {
+       Program p = new Program(source);
+       Term g = new Goal(goal).getListGoals().getFirst();
+       return evalue(p, g, maxStep, maxRedex).toString();
+   }
 
     /**
      *

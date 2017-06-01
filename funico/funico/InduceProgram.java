@@ -49,7 +49,7 @@ public class InduceProgram {
 		int iterations = 100;
 
 		// Search Space definition
-		Space<Program> space = new ProgramSpace(InduceProgram.maxNumEquations);
+		Space<Program> space = new ProgramSpace(InduceProgram.maxNumEquations, InduceProgram.inducedPrograms);
 
 		// Optimization Function
 		OptimizationFunction<Program> function = new Fitness();
@@ -59,8 +59,9 @@ public class InduceProgram {
 		Variation_2_2<Program> xover = new ProgramXOver();
 
 		// Parent selection
-		// Selection<Program> pselection = new Tournament<Program>(4);
+		//Selection<Program> pselection = new Tournament<Program>(4);
 		Selection<Program> pselection = new Roulette<Program>();
+		//Selection<Program> pselection = new Elitism<Program>(1.0,0);
 
 		// Search method
 		EAFactory<Program> factory = new EAFactory<Program>();

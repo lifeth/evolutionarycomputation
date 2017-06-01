@@ -19,7 +19,7 @@ public class JFileChooserInduce extends JFrame implements ActionListener {
 	private JFileChooser filechooser = new JFileChooser();
 	private int maxNumEq = 0, numTerm = 0;
 	private InduceProgram induce;
-	ArrayList<Population<Program>> list;
+	private ArrayList<Population<Program>> list;
 	// private String newline = System.getProperty("line.separator");
 
 	public JFileChooserInduce() {
@@ -32,23 +32,20 @@ public class JFileChooserInduce extends JFrame implements ActionListener {
 		induceButton.addActionListener(this);
 
 		JPanel buttonPanel = new JPanel();
-		// buttonPanel.setSize(40, 40);
 		buttonPanel.add(openButton);
 		buttonPanel.add(induceButton);
 
-		jareaExamples = new JTextArea(10, 50);
-		jareaExamples.setMargin(new Insets(5, 5, 5, 5));
+		this.jareaExamples = new JTextArea(10, 50);
+		this.jareaExamples.setMargin(new Insets(5, 5, 5, 5));
 		JScrollPane examplesScrollPane = new JScrollPane(jareaExamples);
 
-		dtm = new DefaultTableModel(new String[] { "#", "Program", "Covering" }, 0);
-		table = new JTable(dtm);
-		table.setPreferredScrollableViewportSize(new Dimension(610, 400));
-		JScrollPane programsScrollPane = new JScrollPane(table);
+		this.dtm = new DefaultTableModel(new String[] { "#", "Program", "Covering" }, 0);
+		this.table = new JTable(this.dtm);
+		this.table.setPreferredScrollableViewportSize(new Dimension(610, 400));
+		JScrollPane programsScrollPane = new JScrollPane(this.table);
 
 		JPanel jareasPanel = new JPanel();
-		// jareasPanel.add(new Label("Examples"));
 		jareasPanel.add(examplesScrollPane, BorderLayout.NORTH);
-		// jareasPanel.add(new Label("Induced Programs"));
 		jareasPanel.add(programsScrollPane, BorderLayout.SOUTH);
 
 		Container contentPane = getContentPane();
@@ -78,32 +75,40 @@ public class JFileChooserInduce extends JFrame implements ActionListener {
 					in.close();
 
 				} else {
-					jareaExamples.setText("No examples were loaded.");
+					this.jareaExamples.setText("No examples were loaded.");
 				}
 			} else if (e.getActionCommand().equals("Induce Programs")) {
 
 				this.dtm.setRowCount(0);
+				this.list.clear();
 
 				if (this.maxNumEq != 0 && this.numTerm != 0) {
 
-					StringBuilder examples = new StringBuilder(jareaExamples.getText());
+					StringBuilder examples = new StringBuilder(this.jareaExamples.getText());
 
 					this.induce.init(examples.toString(), this.maxNumEq, this.numTerm);
-					boolean isCovered;
+					boolean isCovered = false;
 
-					do {
+					while (!isCovered) {
+
 						isCovered = this.induce.evolve();
 						System.out.println(isCovered);
 
-					    this.list.add(0, InduceProgram.inducedPrograms);
+						this.list.add(0, InduceProgram.inducedPrograms);
 
-						for (Population<Program> population : list) {
-							for (int j = 0; j < population.size(); j++) {
-								this.dtm.addRow(new Object[] { j + 1, population.get(j).object().toString(),
-										population.get(j).info(InduceProgram.gName) });
+						if (isCovered) {
+
+							for (Population<Program> population : list) {
+								for (int j = 0; j < population.size(); j++) {
+									this.dtm.addRow(new Object[] { this.table.getRowCount() + 1,
+											population.get(j).object().toString(),
+											population.get(j).info(InduceProgram.gName) });
+								}
 							}
+
+							InduceProgram.inducedPrograms = null;
 						}
-					} while (!isCovered);
+					}
 
 				}
 			}

@@ -15,16 +15,21 @@ public class GPIterativePopulationSearch<T, R> extends IterativePopulationSearch
 
 	@Override
 	public Population<T> apply(Population<T> pop, Space<T> space) {
-		// Tracer.trace(this, pop, step);
+
 		String gName = Goal.class.getName();
 		while (terminationCondition.evaluate(pop)) {
 			pop = step.apply(pop, space);
-
+			
+			for (int j = 0; j < pop.size(); j++) {
+				 System.out.println("Equation " + j + ": " +
+				 pop.get(j).object().toString() + ": " +
+				 pop.get(j).info(gName));
+			}
+			
 			// Stop condition
 			if ((double) pop.get(0).info(gName) == 1) {
 				break;
 			}
-			// Tracer.trace(this, pop, step); Double
 		}
 		return pop;
 	}

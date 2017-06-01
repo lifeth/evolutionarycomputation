@@ -298,5 +298,4 @@ public class Extractor implements FunicoConstants {
 
         return equa;
     }
-
 }

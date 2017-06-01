@@ -36,7 +36,9 @@ public class XOver extends Variation_2_2<MarkedBitArray>{
           child2_1.rightSetToZero(cross_over_point);
           child1_2.or(child2_1);
           child2_2.or(child1_1);
+          
           return new MarkedBitArray[]{child1_2, child2_2};
+          
       }catch( Exception e ){}
       return null;
   }

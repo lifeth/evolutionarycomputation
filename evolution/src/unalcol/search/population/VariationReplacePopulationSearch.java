@@ -38,6 +38,7 @@ public abstract class VariationReplacePopulationSearch<T,R> implements Populatio
 	public Population<T> init(Space<T> space, Goal<T, R> goal) {
     	Population<T> pop = new Population<T>((Solution<T>[])wrap(space.pick(mu)));
     	pop.set( Goal.class.getName(), goal);
+    	
     	return pop;
 	}
 }

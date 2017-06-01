@@ -6,7 +6,6 @@ import unalcol.optimization.OptimizationFunction;
 import unalcol.optimization.OptimizationGoal;
 import unalcol.search.Goal;
 import unalcol.search.population.PopulationSearch;
-import unalcol.search.selection.Elitism;
 import unalcol.search.selection.Selection;
 import unalcol.search.selection.Tournament;
 import unalcol.search.solution.Solution;
@@ -17,9 +16,9 @@ import unalcol.types.real.array.DoubleArray;
 public class GeneticAlgorithm {
 
 	public static int RUN = 0;
-	public static int MAXITERS = 10000;
+	public static int MAXITERS = 100000;
 	public static int DIM = 300;
-	public static int POPSIZE = 1000;
+	public static int POPSIZE = 100;
 	public static double bestByIte[][] = new double[30][MAXITERS];
 
 	public void maxOnes() {

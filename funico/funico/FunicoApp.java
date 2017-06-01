@@ -1,7 +1,5 @@
 package funico;
 
-import funico.interpreter.Equation;
-
 /*
  * FunicoApp.java
  * -Xms512m -Xmx1024m
@@ -9,7 +7,6 @@ import funico.interpreter.Equation;
  */
 
 import funico.interpreter.Evaluator;
-import funico.interpreter.Example;
 import funico.interpreter.ExampleException;
 import funico.interpreter.Extractor;
 import funico.interpreter.GoalException;
@@ -50,9 +47,12 @@ public class FunicoApp {
             
             System.out.println(Evaluator.evalue(
                     "min(A,B) = 2","min(2,5)"));
+            
+            System.out.println("mmmm: "+Evaluator.evalue(
+                    " max(0,B) = s(s(s(s(A))))","max(0,1)"));
             System.out.println();
 
-            InduceProgram.example = new Example("geq(false,false) = false \n geq(0,0) = true\n geq(1,0) = true; geq(1,1) = true; geq(1,2) = false; geq(2,1) = true; geq(2,5) = false; geq(5,2) = true; geq(3,3) = true");
+           /* InduceProgram.example = new Example("geq(false,false) = false \n geq(0,0) = true\n geq(1,0) = true; geq(1,1) = true; geq(1,2) = false; geq(2,1) = true; geq(2,5) = false; geq(5,2) = true; geq(3,3) = true");
            // for (Equation eq : example.getListEquations()) {
             	//System.out.println(InduceProgram.example.getListEquations().getFirst().getLhs().getListChildren().getFirst().getType());
             //	System.out.println(InduceProgram.example .getListEquations().getFirst().getLhs().getListChildren().getLast().getType());
@@ -69,7 +69,7 @@ public class FunicoApp {
 */
            // Random random = new Random();
             //System.out.println(InduceProgram.extractor.generateRandomTerm(2, random.nextDouble()));
-            System.out.println(InduceProgram.extractor.generateRandomEquation(1, unalcol.random.Random.nextDouble()));
+         //   System.out.println(InduceProgram.extractor.generateRandomEquation(1, unalcol.random.Random.nextDouble()));
 
         } catch (ExampleException | ProgramException | GoalException | LexicalException | SyntacticalException ex) {
             System.out.println(ex);

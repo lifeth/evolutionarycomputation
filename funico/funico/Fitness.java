@@ -15,20 +15,17 @@ public class Fitness extends OptimizationFunction<Program> {
 
 			for (Equation eq : InduceProgram.example.getListEquations()) {
 
-				f += (Evaluator.evalue(program.toString(), eq.getLhs().toString())).
-						equals(eq.getRhs().toString()) ? 1 : 0;
+				f += (Evaluator.evalue(program.toString(), eq.getLhs().toString(), Evaluator.INITIAL_MAX_STEP, 100))
+						.equals(eq.getRhs().toString()) ? 1 : 0;
 			}
-
-			f /= totalExamples;
-
 		} catch (Exception e) {
 			f += 0;
-			//e.printStackTrace();
 		}
-		
+
+		f /= totalExamples;
+
 		program.setCovering(f);
-		
+
 		return f;
 	}
-
 }

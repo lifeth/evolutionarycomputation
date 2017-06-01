@@ -6,7 +6,6 @@ package funico.interpreter;
 
 import funico.InduceProgram;
 import funico.SetTheory;
-import funico.language.FunicoConstants;
 import funico.language.LexicalException;
 import funico.language.Parser;
 import funico.language.SyntacticalException;
@@ -33,7 +32,7 @@ public final class Equation implements funico.language.FunicoConstants {
 	}
 
 	public Equation(Equation e) {
-		this(e.getRoot().clone());
+		this((Term)e.getRoot().clone());
 	}
 
 	public Equation(Term lhs, Term rhs) {
@@ -272,22 +271,26 @@ public final class Equation implements funico.language.FunicoConstants {
 	public Equation repair() {
 		try {
 			
-			this.repairLength();
-
 			if (!InduceProgram.extractor.getTableMainFunctors().contains(this.getLhs().getValue())) {
-				this.setLhs(InduceProgram.extractor.generateRandomEquation(2, Random.nextDouble()).getLhs());
+				this.setLhs(InduceProgram.extractor.generateNewTermGrow(2, Random.nextDouble()));
 			}
+
+			this.repairRight();
 
 			this.repairSuccessor(this.getRoot());
 
-			this.repairRight();
+			this.extendSucessors(this.getRoot());
 
 			while (!getLhs().hasVar() && getRhs().hasVar()) {
 				getLhs().changeConstantsBySetVar(getRhs().getSetVars());
 			}
+
 			if (!SetTheory.isSubSet(getRhs().getSetVars(), getLhs().getSetVars())) {
 				getRhs().changeVarByVar(getLhs().getSetVars());
 			}
+			
+			if(Random.nextBool(0.001))
+				this.repairLength();
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -305,27 +308,23 @@ public final class Equation implements funico.language.FunicoConstants {
 			repairSuccessor(term.getListChildren().getLast());
 			break;
 
+		case SUCCESSOR:
 		case FUNCTOR:
 
 			if (term.getValue().equals("s")) {
 				// Successor can be a functor, but not the main functor
 				repairSuccessor(term.getListChildren().getFirst());
 
-			} else if (InduceProgram.extractor.getTableMainFunctors().contains(term.getValue())
-					&& term.getParent().getValue().equals("s")) {
-			//	modifyChildren(term, 1);
 			} else {
 				repairSuccessor(term.getListChildren().getFirst());
 				repairSuccessor(term.getListChildren().getLast());
 			}
 
 			break;
-		case SUCCESSOR:
-			repairSuccessor(term.getListChildren().getFirst());
-			break;
+
 		case TRUE:
 		case FALSE:
-			if (term.getParent().getType() == FunicoConstants.SUCCESSOR || term.getParent().getValue().equals("s")) {
+			if (term.getParent().getType() == SUCCESSOR || term.getParent().getValue().equals("s")) {
 
 				modifyChildren(term, 1);
 			}
@@ -336,6 +335,7 @@ public final class Equation implements funico.language.FunicoConstants {
 	}
 
 	public void repairRight() {
+		
 		Term resultType = InduceProgram.example.getListEquations().getFirst().getRhs();
 
 		switch (this.getRhs().getType()) {
@@ -366,87 +366,7 @@ public final class Equation implements funico.language.FunicoConstants {
 		}
 	}
 
-	public int getTypeAllowed() {
-
-		Term left = InduceProgram.example.getListEquations().getFirst().getLhs().getListChildren().getFirst();
-		Term resultType = InduceProgram.example.getListEquations().getFirst().getRhs();
-
-		switch (left.getType()) {
-
-		case NATURAL:
-		case SUCCESSOR:
-		case VARIABLE:
-			if (resultType.getType() == NATURAL || resultType.getType() == SUCCESSOR) {
-				// Allows the same main functor which returns a number, inside
-				return 1 + 1;
-			}
-			// params are numbers/variables but the result of the main functor
-			// is not numeric/variable
-			return 1;
-
-		case TRUE:
-		case FALSE:
-			if (resultType.getType() == TRUE || resultType.getType() == FALSE) {
-				// Allows the same main functor which returns a boolean, inside
-				return 3 + 1;
-			}
-
-			// params are booleans but the result of the main functor is not
-			// boolean
-			return 3;
-
-		default:
-			return 0;
-		}
-	}
-
-	public void repairMainFunctor(Term term) {
-
-		int type = this.getTypeAllowed();
-
-		switch (term.getType()) {
-		case EQUAL:
-		case EQUAL_SYMBOL:
-			repairMainFunctor(term.getListChildren().getFirst());
-			repairMainFunctor(term.getListChildren().getLast());
-			break;
-
-		case FUNCTOR:
-
-			if (InduceProgram.extractor.getTableMainFunctors().contains(term.getParent().getValue())) {
-				if ((type == 1 && !term.getValue().equals("s")) || type == 3) {
-					modifyChildren(term, type);
-				}
-
-			} else if (InduceProgram.extractor.getTableMainFunctors().contains(term.getValue())) {
-				repairMainFunctor(term.getListChildren().getFirst());
-				repairMainFunctor(term.getListChildren().getLast());
-			}
-
-			break;
-
-		case SUCCESSOR:
-		case NATURAL:
-		case VARIABLE:
-			if (type != 1) {
-				modifyChildren(term, 3);
-			}
-			break;
-
-		case TRUE:
-		case FALSE:
-			if (InduceProgram.extractor.getTableMainFunctors().contains(term.getParent().getValue()) && type != 3) {
-				modifyChildren(term, 1);
-			}
-			break;
-		default:
-			break;
-		}
-	}
-
 	public void modifyChildren(Term term, int type) {
-		Term newTerm = null;
-		int index = term.getParent().getListChildren().indexOf(term);
 
 		switch (type) {
 		case 1:// Numeric or Variable
@@ -454,40 +374,43 @@ public final class Equation implements funico.language.FunicoConstants {
 			String terminal = SetTheory.getRandomElementSet(InduceProgram.extractor.getTableTerminals());
 
 			if (InduceProgram.extractor.getTableTerminalsWithType().get(terminal) == NATURAL) {
-				newTerm = SetTheory.generateTreeNumber(Integer.parseInt(terminal));
-				newTerm.setParent(term.getParent());
+				term.setListChildren(null);
+				SetTheory.generateTreeNumber(Integer.parseInt(terminal), term);
 			} else {
 				terminal = SetTheory.getRandomElementSet(InduceProgram.extractor.getTableVariables());
-				newTerm = new Term(terminal, VARIABLE, term.getParent());
+				term.setListChildren(null);
+				term.setType(VARIABLE);
+				term.setValue(terminal);
 			}
 			break;
 		case 3:// Boolean
 
 			boolean t = Random.nextBool();
-			newTerm = new Term("" + t, (t ? TRUE : FALSE), term.getParent());
+			term.setListChildren(null);
+			term.setType((t ? TRUE : FALSE));
+			term.setValue(""+t);
 			break;
 
 		case 2:// Main Functor Numeric/Variable
 		case 4:// Main Functor Boolean
 
-			newTerm = new Term(SetTheory.getRandomElementSet(InduceProgram.extractor.getTableMainFunctors()), FUNCTOR,
-					term.getParent());
+			term.setListChildren(null);
+			term.setValue(SetTheory.getRandomElementSet(InduceProgram.extractor.getTableMainFunctors())); 
+			term.setType(FUNCTOR);
 
-			int arity = InduceProgram.extractor.getTableFunctors().get(newTerm.getValue());
+			int arity = InduceProgram.extractor.getTableFunctors().get(term.getValue());
 			for (int i = 0; i < arity; i++) {
 				if (type == 4) {
 					t = Random.nextBool();
-					newTerm.addChild(new Term("" + t, (t ? TRUE : FALSE), newTerm));
+					term.addChild(new Term("" + t, (t ? TRUE : FALSE)));
 				} else {
 					terminal = SetTheory.getRandomElementSet(InduceProgram.extractor.getTableTerminals());
 
 					if (InduceProgram.extractor.getTableTerminalsWithType().get(terminal) == NATURAL) {
-						Term te = SetTheory.generateTreeNumber(Integer.parseInt(terminal));
-						te.setParent(newTerm);
-						newTerm.addChild(te);
+						SetTheory.generateTreeNumber(Integer.parseInt(terminal), term);
 					} else {
 						terminal = SetTheory.getRandomElementSet(InduceProgram.extractor.getTableVariables());
-						newTerm.addChild(new Term(terminal, VARIABLE, newTerm));
+						term.addChild(new Term(terminal, VARIABLE));
 					}
 				}
 			}
@@ -496,12 +419,61 @@ public final class Equation implements funico.language.FunicoConstants {
 			break;
 		}
 
-		term.getParent().setChild(index, newTerm);
 	}
-	
-	public void repairLength(){
-		if(this.getRoot().getNumberNodes() > InduceProgram.numberTerms){
+
+	public void repairLength() {
+
+		if (this.getNumberNodes() > InduceProgram.numberTerms) {
 			this.setRoot(InduceProgram.extractor.generateRandomEquation(2, Random.nextDouble()).getRoot());
+		}
+	}
+
+	public void extendSucessors(Term term) {
+
+		switch (term.getType()) {
+		case EQUAL:
+		case EQUAL_SYMBOL:
+		case FUNCTOR:
+			if (term.getValue().equals("s")) {
+				if (Character.isDigit(term.getChild(0).toString().charAt(0))) {
+					inDepth(term);
+				} else {
+					extendSucessors(term.getListChildren().getFirst());
+				}
+			} else {
+				extendSucessors(term.getListChildren().getFirst());
+				extendSucessors(term.getListChildren().getLast());
+			}
+			break;
+		case SUCCESSOR:
+			if (Character.isDigit(term.getChild(0).toString().charAt(0))) {
+				inDepth(term);
+			} else {
+				extendSucessors(term.getListChildren().getFirst());
+			}
+
+			break;
+		case NATURAL:
+			term.setValue(SetTheory.getRandomElementSet(InduceProgram.extractor.getTableVariables()));
+			term.setType(VARIABLE);
+			break;
+
+		default:
+			break;
+		}
+	}
+
+	private void inDepth(Term t) {
+		switch (t.getType()) {
+		case NATURAL:
+			t.setValue(SetTheory.getRandomElementSet(InduceProgram.extractor.getTableVariables()));
+			t.setType(VARIABLE);
+			break;
+		case SUCCESSOR:
+			inDepth(t.getChild(0));
+			break;
+		default:
+			break;
 		}
 	}
 
