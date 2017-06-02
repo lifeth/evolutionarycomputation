@@ -11,6 +11,7 @@ import unalcol.search.population.Population;
 import unalcol.search.population.PopulationSearch;
 import unalcol.search.selection.Roulette;
 import unalcol.search.selection.Selection;
+import unalcol.search.selection.Tournament;
 import unalcol.search.space.Space;
 import unalcol.search.variation.Variation_1_1;
 import unalcol.search.variation.Variation_2_2;
@@ -23,6 +24,8 @@ public class InduceProgram {
 	public static int numberTerms;
 	public static Population<Program> inducedPrograms;
 	public static String gName = Goal.class.getName();
+	public static boolean stop;
+
 
 	public InduceProgram() {
 	}
@@ -59,8 +62,8 @@ public class InduceProgram {
 		Variation_2_2<Program> xover = new ProgramXOver();
 
 		// Parent selection
-		//Selection<Program> pselection = new Tournament<Program>(4);
-		Selection<Program> pselection = new Roulette<Program>();
+		Selection<Program> pselection = new Tournament<Program>(4);
+		//Selection<Program> pselection = new Roulette<Program>();
 		//Selection<Program> pselection = new Elitism<Program>(1.0,0);
 
 		// Search method

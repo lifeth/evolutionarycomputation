@@ -48,7 +48,7 @@ public class Deceptive extends OptimizationFunction<MarkedBitArray> {
 
 		for (int i = 0; i < x.size(); i += 3) {
 			 f += order.get(getValue(x, i) + "" + getValue(x, i + 1) + "" + getValue(x, i + 2));
-			//f += order.get((x.get(i) ? 1 : 0) + "" + (x.get(i + 1) ? 1 : 0) + "" + (x.get(i + 2) ? 1 : 0));
+			f += order.get((x.get(i) ? 1 : 0) + "" + (x.get(i + 1) ? 1 : 0) + "" + (x.get(i + 2) ? 1 : 0));
 		}
 		return f;
 	}

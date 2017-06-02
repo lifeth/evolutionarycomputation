@@ -289,7 +289,7 @@ public final class Equation implements funico.language.FunicoConstants {
 				getRhs().changeVarByVar(getLhs().getSetVars());
 			}
 			
-			if(Random.nextBool(0.001))
+			if(Random.nextBool(0.05))
 				this.repairLength();
 
 		} catch (Exception e) {

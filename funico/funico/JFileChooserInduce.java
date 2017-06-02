@@ -16,6 +16,7 @@ public class JFileChooserInduce extends JFrame implements ActionListener {
 	private JTextArea jareaExamples;
 	private DefaultTableModel dtm;
 	private JTable table;
+	private JButton stopButton;
 	private JFileChooser filechooser = new JFileChooser();
 	private int maxNumEq = 0, numTerm = 0;
 	private InduceProgram induce;
@@ -31,9 +32,14 @@ public class JFileChooserInduce extends JFrame implements ActionListener {
 		JButton induceButton = new JButton("Induce Programs");
 		induceButton.addActionListener(this);
 
+		this.stopButton = new JButton("Stop");
+		this.stopButton.addActionListener(this);
+		this.stopButton.setEnabled(false);
+
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.add(openButton);
 		buttonPanel.add(induceButton);
+		//buttonPanel.add(this.stopButton);
 
 		this.jareaExamples = new JTextArea(10, 50);
 		this.jareaExamples.setMargin(new Insets(5, 5, 5, 5));
@@ -58,6 +64,9 @@ public class JFileChooserInduce extends JFrame implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		this.stopButton.setEnabled(false);
+		InduceProgram.stop = false;
+		InduceProgram.inducedPrograms = null;
 
 		try {
 			if (e.getActionCommand().equals("Load Examples")) {
@@ -77,44 +86,65 @@ public class JFileChooserInduce extends JFrame implements ActionListener {
 				} else {
 					this.jareaExamples.setText("No examples were loaded.");
 				}
+
 			} else if (e.getActionCommand().equals("Induce Programs")) {
 
 				this.dtm.setRowCount(0);
 				this.list.clear();
+				this.stopButton.setEnabled(true);
 
 				if (this.maxNumEq != 0 && this.numTerm != 0) {
 
 					StringBuilder examples = new StringBuilder(this.jareaExamples.getText());
 
 					this.induce.init(examples.toString(), this.maxNumEq, this.numTerm);
-					boolean isCovered = false;
 
-					while (!isCovered) {
-
-						isCovered = this.induce.evolve();
-						System.out.println(isCovered);
-
-						this.list.add(0, InduceProgram.inducedPrograms);
-
-						if (isCovered) {
-
-							for (Population<Program> population : list) {
-								for (int j = 0; j < population.size(); j++) {
-									this.dtm.addRow(new Object[] { this.table.getRowCount() + 1,
-											population.get(j).object().toString(),
-											population.get(j).info(InduceProgram.gName) });
-								}
-							}
-
-							InduceProgram.inducedPrograms = null;
+					Thread t = new Thread() {
+						@Override
+						public void run() {
+							evolve();
 						}
-					}
-
+					};
+					
+					t.start();
 				}
+
+			} else if (e.getActionCommand().equals("Stop")) {
+
+				InduceProgram.stop = true;
+
+				printPrograms();
 			}
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
+		}
+	}
+
+	public void evolve() {
+
+		boolean isCovered = false;
+		
+		while (!isCovered && !InduceProgram.stop) {
+
+			isCovered = induce.evolve();
+			System.out.println(isCovered);
+
+			list.add(0, InduceProgram.inducedPrograms);
+			printPrograms();
+		}
+	}
+
+	public void printPrograms() {
+
+		if (!list.isEmpty()) {
+			this.dtm.setRowCount(0);
+			for (Population<Program> population : list) {
+				for (int j = 0; j < population.size(); j++) {
+					this.dtm.addRow(new Object[] { this.table.getRowCount() + 1, population.get(j).object().toString(),
+							population.get(j).info(InduceProgram.gName) });
+				}
+			}
 		}
 	}
 

@@ -47,6 +47,7 @@ public class VarLengthBinarySpace extends Space<BitArray> {
 
 	@Override
 	public BitArray pick() {
-		return (maxVarGenes>0)?new BitArray(minLength+RawGenerator.integer(this, maxVarGenes*gene_size), true):new BitArray(minLength, true);
+		//return (maxVarGenes>0)?new BitArray(minLength+RawGenerator.integer(this, maxVarGenes*gene_size), true):new BitArray(minLength, true);
+		return new BitArray("00011");
 	}
 }

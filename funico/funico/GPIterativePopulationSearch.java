@@ -27,7 +27,7 @@ public class GPIterativePopulationSearch<T, R> extends IterativePopulationSearch
 			}
 			
 			// Stop condition
-			if ((double) pop.get(0).info(gName) == 1) {
+			if ((double) pop.get(0).info(gName) == 1 || InduceProgram.stop == true) {
 				break;
 			}
 		}

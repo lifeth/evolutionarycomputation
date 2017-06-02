@@ -20,6 +20,10 @@ public class MaxOnes extends OptimizationFunction<MarkedBitArray> {
 			if( (x.get(i) && !x.getMark(i)) || (!x.get(i) && x.getMark(i))){
 				f++;		       
 			}
+			
+			/*if(x.get(i)){
+				f++;		       
+			}*/
 		}
 		return f;
 	}
